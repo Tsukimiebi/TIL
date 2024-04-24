@@ -15,4 +15,80 @@
 # Lesson3 制御フロー
 電車で読んだ。「こういう書き方ができる」っていうのが役に立ちそうなので章ごとの内容と別に立項していく。
 
+# Lesson4 関数と例外処理
+- *argsについて  
+  時々関数の説明で見かける`*args`は引数として設定しておくとまとめてタプル化してくれるやつとのこと。
+  ~~~
+  def sample_args(*args):
+    print(args)
+
+  run: sample args("生脚", "魅惑の", "マーメイド")
+  result: ("生脚", "魅惑の", "マーメイド")
+  ~~~
+  
+- **kwargsについて  
+  *argsと同様に`**kwargs`は引数として設定しておくと辞書化して受け取ってくれるやつとのこと
+  ~~~
+  def sample_kwargs(*kwargs):
+    print(kwargs)
+
+  run: sample kwargs(wind = "ぶりーげん", night = "いーふぉ", world = "えるな")
+  result: {'wind': "ぶりーげん", 'night': "いーふぉ", 'world': "えるな"}
+  ~~~
+
+- クロージャー  
+  関数内関数のこと。関数内関数を戻り値にすることで、外側の関数に渡した引数を保持して実行することができたりする。
+  ~~~
+  def sale_ratio(ratio):
+    def calc_sale_value(now_value):
+      return now_value * ratio
+
+  first_sale = sale_ratio(0.9)
+  ptint([first_sale(1000), first_sale(800)])
+  result: [900, 720]
+
+  second_sale = sale_ratio(0.5)
+  ptint([first_sale(1000), first_sale(800)])
+  result: [500, 400]
+  ~~~
+
+- デコレーター
+  関数内関数を使って作られた「関数の実行前後に実行する関数」のこと。
+  ~~~
+  def decolate(func):
+    def wrapper(*args, **kwargs):
+      print("前処理だよ")
+      result = func(*args, **kwargs):
+      print("後処理だよ")
+      return result
+
+  def add(a, b):
+    return a + b
+
+  sum = decolate(add)
+  print(sum(10, 20))
+  result:
+    前処理だよ
+    後処理だよ
+    30
+
+  @decolate
+  def minus(a, b):
+    return a - b
+
+  print(minus(20, 10))
+  result:
+    前処理だよ
+    後処理だよ
+    10
+  ~~~
+
 # 役に立ちそうな記述テクニック
+- デフォルト引数に空のリストなどを使いたい時  
+  `def default_list_sample(list=[])`などとすると、2度目に関数が呼び出されたときは`list=[]`で初期化されない。  
+  そのためデフォルトでは`None`を使って関数内で初期化を行う。
+  ~~~
+  def default_list_sample(list=None):
+    if list is None:
+      list = []
+  ~~~
